@@ -1,21 +1,13 @@
-import lombok.Getter;
-import lombok.Setter;
+public class Prey extends Animal{
 
-import java.util.Random;
+    private double pWolfGlobalMax;
+    public Prey() {
+        super();
+    }
 
-@Getter
-@Setter
-public class Prey {
-    //constants
-    private final double CHI = 0.729843788;
-    private final double C = 2.05;
-
-    private final Random rand = new Random();
-
-    private double a;
-    private double v;
-    private Vector2D x;
-
-    private Vector2D e1 = new Vector2D(rand.nextDouble(), rand.nextDouble());
-    private Vector2D e2 = new Vector2D(rand.nextDouble(), rand.nextDouble());
+    @Override
+    public void move() {
+        pWolfGlobalMax = 3.0; //Gewichtung zur Position des "besten" Wolfs
+        delta_v = 0.25;  // Skalierung der Schrittweite
+    }
 }

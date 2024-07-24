@@ -1,6 +1,7 @@
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
 import java.util.Random;
 
 @Getter
@@ -39,8 +40,22 @@ public class Vector2D {
         return Math.round(input * Math.pow(10,digits)) /Math.pow(10,digits);
     }
 
+    public Vector2D elementWiseMul(Vector2D other) {
+        return new Vector2D(round(this.x * other.x, precision), round(this.y * other.y, precision));
+    }
+
+    // Distance between two vectors
+    public double distance(Vector2D other) {
+        return Math.sqrt(Math.pow(this.x - other.x, 2) + Math.pow(this.y - other.y, 2));
+    }
+
     @Override
     public String toString() {
         return String.format("Vector[%s | %s]",x,y);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 }
