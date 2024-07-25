@@ -6,13 +6,14 @@ public class Main {
 
     private static void createAndShowGUI() {
         List<Wolf> wolfs = new ArrayList<>();
-        Prey prey = new Prey();
-        Terrain terrain = new Terrain(1000.0, 1000.0, prey, wolfs);
+        Terrain terrain = new Terrain(1000.0, 1000.0);
+        Prey prey = new Prey(terrain);
+
 
         TerrainPanel terrainPanel = new TerrainPanel(terrain, prey, wolfs);
 
-        for (int i = 0; i < 20; i++) {
-            wolfs.add(new Wolf(prey));
+        for (int i = 0; i < 1; i++) {
+            wolfs.add(new Wolf(terrain));
         }
 
         JFrame frame = new JFrame("Wolfs and Prey on Terrain");
@@ -21,16 +22,18 @@ public class Main {
         frame.setSize((int) terrain.getWidth(), (int) terrain.getLength()); // Größe des Frames entsprechend dem Terrain
         frame.setVisible(true);
 
+        prey.start();
         for (Wolf wolf : wolfs) {
             wolf.start();
         }
-        prey.start();
+
 
         Vector2D oldPosition = terrain.getGlobalMaxPosition();
         Vector2D currentPosition;
         while (!prey.isInterrupted()) {
+            terrainPanel.repaint();
             for(Wolf wolf : wolfs) {
-                if(wolf.preyCaught()) break;
+                if(wolf.preyCaught()) prey.interrupt();
             }
             terrainPanel.repaint();
             currentPosition = terrain.getGlobalMaxPosition();
@@ -38,7 +41,7 @@ public class Main {
                 oldPosition = currentPosition;
             }
             try {
-                Thread.sleep(100); // Wartezeit zwischen den Aktualisierungen
+                Thread.sleep(1000); // Wartezeit zwischen den Aktualisierungen
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

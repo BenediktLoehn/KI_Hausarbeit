@@ -1,8 +1,9 @@
 public class Prey extends Animal{
 
     private double pWolfGlobalMax;
-    public Prey() {
-        super();
+    public Prey(Terrain terrain) {
+        super(terrain);
+        terrain.setPrey(this);
     }
 
     @Override

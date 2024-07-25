@@ -32,11 +32,12 @@ public class TerrainPanel extends JPanel {
             g2d.fillRect(0, 0, terrainWidth, terrainHeight);
         }
 
-        for(Vector2D obstacle : terrain.getObstacles()) {
-            int x1 = (int) obstacle.getX();
-            int y1 = (int) obstacle.getX();
-            int x2 = (int) obstacle.getY();
-            int y2 = (int) obstacle.getY();
+        for(Obstacle obstacle : terrain.getObstacles()) {
+            g2d.setColor(Color.LIGHT_GRAY);
+            int x1 = (int) obstacle.getX().getX();
+            int y1 = (int) obstacle.getX().getY();
+            int x2 = (int) obstacle.getY().getX();
+            int y2 = (int) obstacle.getY().getY();
 
             g.drawLine(x1, y1, x2, y2);
         }
@@ -49,5 +50,12 @@ public class TerrainPanel extends JPanel {
             int y = (int) wolfPosition.getY();
             g2d.fillOval(x, y, 10, 10);
         }
+
+        //paint prey
+        g2d.setColor(Color.BLUE);
+        Vector2D preyPosition = prey.getPosition();
+        int x = (int) preyPosition.getX();
+        int y = (int) preyPosition.getY();
+        g2d.fillOval(x, y, 10, 10);
     }
 }

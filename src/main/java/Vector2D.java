@@ -1,11 +1,6 @@
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.Objects;
 import java.util.Random;
 
-@Getter
-@Setter
 public class Vector2D {
 
     private Random rand = new Random();
@@ -20,8 +15,8 @@ public class Vector2D {
 
     //random vector for starting position
     public Vector2D(int xBound, int yBound) {
-        this.x = round(rand.nextDouble(xBound, yBound), precision);
-        this.y = round(rand.nextDouble(xBound, yBound), precision);
+        this.x = round(rand.nextDouble(0, xBound), precision);
+        this.y = round(rand.nextDouble(0, yBound), precision);
     }
 
     public Vector2D add(Vector2D other) {
@@ -47,6 +42,27 @@ public class Vector2D {
     // Distance between two vectors
     public double distance(Vector2D other) {
         return Math.sqrt(Math.pow(this.x - other.x, 2) + Math.pow(this.y - other.y, 2));
+    }
+
+    //length of a vector
+    public double magnitude() {
+        return Math.sqrt(this.x * this.x + this.y * this.y);
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public void setY(double y) {
+        this.y = y;
     }
 
     @Override
