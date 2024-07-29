@@ -9,7 +9,7 @@ public class Terrain {
     private Vector2D globalMaxPosition;
 
     private List<Wolf> wolfs = new ArrayList<>();
-    private Prey prey = new Prey(this);
+    private Prey prey;
 
     public List<Obstacle> obstacles = new ArrayList<>();
 

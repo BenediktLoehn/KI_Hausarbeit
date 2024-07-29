@@ -5,15 +5,18 @@ import java.util.List;
 public class Main {
 
     private static void createAndShowGUI() {
-        List<Wolf> wolfs = new ArrayList<>();
         Terrain terrain = new Terrain(1000.0, 1000.0);
-        Prey prey = new Prey(terrain);
-
-
+        List<Wolf> wolfs = new ArrayList<>();
+        terrain.setWolfs(wolfs);
+        Prey prey = new Prey(terrain, 1);
+        terrain.setPrey(prey);
         TerrainPanel terrainPanel = new TerrainPanel(terrain, prey, wolfs);
 
-        for (int i = 0; i < 1; i++) {
-            wolfs.add(new Wolf(terrain));
+        for (int i = 0; i < 10; i++) {
+            Wolf wolf = new Wolf(terrain, i);
+            if(terrain.getGlobalMaxPosition() == null || wolf.getPosition().distance(prey.getPosition()) < terrain.getGlobalMaxPosition().distance(prey.getPosition())) {
+                terrain.setGlobalMaxPosition(wolf.getPosition());
+            }
         }
 
         JFrame frame = new JFrame("Wolfs and Prey on Terrain");
@@ -35,13 +38,12 @@ public class Main {
             for(Wolf wolf : wolfs) {
                 if(wolf.preyCaught()) prey.interrupt();
             }
-            terrainPanel.repaint();
             currentPosition = terrain.getGlobalMaxPosition();
-            if (oldPosition != currentPosition) {
+            if (oldPosition.equals(currentPosition)) {
                 oldPosition = currentPosition;
             }
             try {
-                Thread.sleep(1000); // Wartezeit zwischen den Aktualisierungen
+                Thread.sleep(500); // Wartezeit zwischen den Aktualisierungen
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -50,7 +52,6 @@ public class Main {
 
         System.err.printf("Prey was caught");
     }
-
 
     public static void main(String[] args) {
         createAndShowGUI();

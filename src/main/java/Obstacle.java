@@ -6,7 +6,10 @@ public class Obstacle {
 
     private Vector2D x;
     private Vector2D y;
+
     private double collisionRadius = 5.0;
+
+    private Vector2D position;
 
 
     public Obstacle(Vector2D x, Vector2D y) {

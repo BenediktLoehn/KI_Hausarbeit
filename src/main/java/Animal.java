@@ -2,51 +2,54 @@ import java.util.List;
 import java.util.Random;
 
 public class Animal extends Thread{
-    //constants
-    protected final double CHI = 0.729843788;
-    protected final double c = 2.05;
-
-    private final Random rand = new Random();
-
-    protected Vector2D a;
-    protected Vector2D v;
-    protected Vector2D position;
+    protected final Random rand = new Random();
+    protected int id;
 
     private final double startingX;
     private final double startingY;
+    protected final Terrain terrain;
+    protected Vector2D a;
+    protected Vector2D v;
+    protected Vector2D position;
+    protected Vector2D direction;
 
+
+
+
+    protected double  w; //weight of own direction
     protected double pI; //personal attraction
     protected double pG; //neighbourhood attraction
     protected double delta_v; //to scale down steps
-    protected double radius = 3.0; //for collision checks with obstacles
+    protected double radius = 5.0; //for collision checks with obstacles
 
-    protected Vector2D e1 = new Vector2D(rand.nextDouble(), rand.nextDouble());
-    protected Vector2D e2 = new Vector2D(rand.nextDouble(), rand.nextDouble());
     private Vector2D selfMaxPosition;
 
-    private final Terrain terrain;
 
 
-    public Animal(Terrain terrain) {
+
+    public Animal(Terrain terrain, int id) {
         this.terrain = terrain;
-        this.position = new Vector2D(1000, 1000);
-        this.v = new Vector2D(1000, 1000);
+        this.id = id;
+        this.startingX = rand.nextDouble(terrain.getLength());
+        this.startingY = rand.nextDouble(terrain.getWidth());
+
+        position = new Vector2D(startingX, startingY);
+
+        direction = new Vector2D(rand.nextDouble(-1, 1), rand.nextDouble(-1, 1));
         this.selfMaxPosition = position;
 
-        this.startingX = position.getX();
-        this.startingY = position.getY();
 
     }
 
     //check collisions with obstacles
-    protected boolean isColliding(Vector2D newPosition, List<Vector2D> obstacles, double obstacleRadius) {
-        for(Vector2D obstacle : obstacles) {
+    /*protected boolean isColliding(Vector2D newPosition, List<Obstacle> obstacles, double obstacleRadius) {
+        for(Obstacle obstacle : obstacles) {
             if(newPosition.distance(obstacle) < this.radius + obstacleRadius) {
                 return true;
             }
         }
         return false;
-    }
+    }*/
 
     public void move() {
 
@@ -121,27 +124,27 @@ public class Animal extends Thread{
         this.delta_v = delta_v;
     }
 
-    public Vector2D getE1() {
-        return e1;
-    }
-
-    public void setE1(Vector2D e1) {
-        this.e1 = e1;
-    }
-
-    public Vector2D getE2() {
-        return e2;
-    }
-
-    public void setE2(Vector2D e2) {
-        this.e2 = e2;
-    }
-
     public Vector2D getSelfMaxPosition() {
         return selfMaxPosition;
     }
 
     public void setSelfMaxPosition(Vector2D selfMaxPosition) {
         this.selfMaxPosition = selfMaxPosition;
+    }
+
+    public Vector2D getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Vector2D direction) {
+        this.direction = direction;
+    }
+
+    public double getW() {
+        return w;
+    }
+
+    public void setW(double w) {
+        this.w = w;
     }
 }

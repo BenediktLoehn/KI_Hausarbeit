@@ -49,6 +49,18 @@ public class Vector2D {
         return Math.sqrt(this.x * this.x + this.y * this.y);
     }
 
+    public double dot(Vector2D other) {
+        return this.x * other.x + this.y * other.y;
+    }
+
+    public Vector2D closestPointOnLineSegment(Vector2D a, Vector2D b) {
+        double lengthSquared = a.sub(b).magnitude() * a.sub(b).magnitude();
+        if (lengthSquared == 0.0) return a;
+
+        double t = Math.max(0, Math.min(1, this.sub(a).dot(b.sub(a)) / lengthSquared));
+        return a.add(b.sub(a).scale(t));
+    }
+
     public double getX() {
         return x;
     }
