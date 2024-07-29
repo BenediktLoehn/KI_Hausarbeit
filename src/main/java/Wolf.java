@@ -10,6 +10,14 @@ public class Wolf extends Animal {
         terrain.getWolfs().add(this);
     }
 
+    public void update() {
+        Vector2D preyPosition = prey.getPosition();
+        if(position.distance(preyPosition) < terrain.getGlobalMaxPosition().distance(preyPosition)) terrain.setGlobalMaxPosition(position);
+    }
+    public boolean preyCaught() {
+        return position.equals(prey.getPosition());
+    }
+
     @Override
     public void move() {
 
@@ -17,7 +25,7 @@ public class Wolf extends Animal {
         pI = 0.25; // Gewichtung hin zum eigenen Bestwert
         pG = 0.25; // Gewichtung hin zum Globalen Maximum
         pPrey = 1.25; //Gewichtung zur Position der Beute
-        delta_v = 0.05;  // Skalierung der Schrittweite
+        delta_v = 0.01;  // Skalierung der Schrittweite
 
 
         //random values for weight of own max, global max and prey position
@@ -32,31 +40,15 @@ public class Wolf extends Animal {
         Vector2D attractionPrey = prey.getPosition().sub(position).scale(pPrey * r3);
 
         //New direction
-        direction = direction.scale(w);
-        direction = direction.add(attractionLocalMax);
-        direction = direction.add(attractionGlobalMax);
-        direction = direction.add(attractionPrey);
-        direction = direction.scale(delta_v);
+        Vector2D newDirection;
+        newDirection = direction.scale(w);
+        newDirection = newDirection.add(attractionLocalMax);
+        newDirection = newDirection.add(attractionGlobalMax);
+        newDirection = newDirection.add(attractionPrey);
+        newDirection = newDirection.scale(delta_v);
 
-        // Calculate repulsive force from obstacles
-        Vector2D repulsiveForce = new Vector2D(0.0, 0.0);
-        for (Obstacle obstacle : terrain.getObstacles()) {
-            Vector2D closestPoint = position.closestPointOnLineSegment(obstacle.getX(), obstacle.getY());
-            double distanceToObstacle = position.distance(closestPoint);
-
-            if (distanceToObstacle < radius + obstacle.getCollisionRadius()) {
-                Vector2D startToObstacle = obstacle.getX().sub(position);
-                Vector2D endToObstacle = obstacle.getY().sub(position);
-                Vector2D closestEndPoint = startToObstacle.magnitude() < endToObstacle.magnitude() ? obstacle.getX() : obstacle.getY();
-
-                Vector2D awayFromObstacle = closestEndPoint.sub(position).scale(-1).scale(100 / (distanceToObstacle * distanceToObstacle));
-                repulsiveForce = repulsiveForce.add(awayFromObstacle);
-            }
-        }
-
-        direction = direction.add(repulsiveForce);
         // Introduce small random perturbation
-        Vector2D perturbation = new Vector2D(rand.nextDouble(-0.1, 0.1), rand.nextDouble(-0.1, 0.1));
+        Vector2D perturbation = new Vector2D(rand.nextDouble(-1, 1), rand.nextDouble(-1, 1));
         direction = direction.add(perturbation);
 
         System.err.printf("Calculated direction of Wolf %d: " + direction + "\n", id);
@@ -73,10 +65,15 @@ public class Wolf extends Animal {
                 break;
             }
         }
-        if(!collisionDetected) {
+
+        // Handle collision
+        if (collisionDetected) {
+            direction = findAlternativeDirection();
+            newPosition = position.add(direction);
             position = newPosition;
         } else {
-            System.err.printf("Collision detected for Wolf %d, position not updated\n", id);
+            direction = newDirection;
+            position = newPosition;
         }
 
         System.err.printf("new position of Wolf %d: " + position + "\n", id);
@@ -90,18 +87,36 @@ public class Wolf extends Animal {
         }
         update();
         try {
-            Thread.sleep(500);
+            Thread.sleep(10);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
-    public void update() {
-        Vector2D preyPosition = prey.getPosition();
-        if(position.distance(preyPosition) < terrain.getGlobalMaxPosition().distance(preyPosition)) terrain.setGlobalMaxPosition(position);
-    }
 
-    public boolean preyCaught() {
-        return position.equals(prey.getPosition());
+    private Vector2D findAlternativeDirection() {
+        double angleIncrement = Math.PI / 8; // Increment angle by 22.5 degrees
+        for (int i = 1; i <= 8; i++) { // Check 8 alternative directions
+            double angle = angleIncrement * i;
+            Vector2D alternativeDirection = new Vector2D(
+                    direction.getX() * Math.cos(angle) - direction.getY() * Math.sin(angle),
+                    direction.getX() * Math.sin(angle) + direction.getY() * Math.cos(angle)
+            ).normalize().scale(delta_v);
+
+            Vector2D newPosition = position.add(alternativeDirection);
+            boolean collisionDetected = false;
+            for (Obstacle obstacle : terrain.getObstacles()) {
+                Vector2D closestPoint = newPosition.closestPointOnLineSegment(obstacle.getX(), obstacle.getY());
+                if (newPosition.distance(closestPoint) < radius + obstacle.getCollisionRadius()) {
+                    collisionDetected = true;
+                    break;
+                }
+            }
+
+            if (!collisionDetected) {
+                return alternativeDirection;
+            }
+        }
+        return direction.scale(-1); // If no alternative direction is found, reverse direction
     }
 
     @Override

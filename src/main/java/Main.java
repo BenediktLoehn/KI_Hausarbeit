@@ -43,7 +43,7 @@ public class Main {
                 oldPosition = currentPosition;
             }
             try {
-                Thread.sleep(500); // Wartezeit zwischen den Aktualisierungen
+                Thread.sleep(20); // Wartezeit zwischen den Aktualisierungen
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

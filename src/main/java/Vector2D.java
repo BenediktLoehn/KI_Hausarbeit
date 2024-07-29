@@ -61,6 +61,15 @@ public class Vector2D {
         return a.add(b.sub(a).scale(t));
     }
 
+    public Vector2D normalize() {
+        double magnitude = magnitude();
+        if (magnitude == 0) {
+            // To avoid division by zero, return the zero vector
+            return new Vector2D(0, 0);
+        }
+        return new Vector2D(x / magnitude, y / magnitude);
+    }
+
     public double getX() {
         return x;
     }
@@ -79,7 +88,7 @@ public class Vector2D {
 
     @Override
     public String toString() {
-        return String.format("Vector[%s | %s]",x,y);
+        return String.format("Vector[%.2f | %.2f]", x, y);
     }
 
     @Override
