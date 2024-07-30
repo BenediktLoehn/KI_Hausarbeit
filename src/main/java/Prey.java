@@ -12,7 +12,7 @@ public class Prey extends Animal {
 
     @Override
     public Vector2D beginMove() {
-        double w = 1; // Weighting of the own direction
+        double w = 3; // Weighting of the own direction
         double pWolf = -3; // Weighting away from wolves
         double delta_v = 0.3;  // Scaling of step size
 

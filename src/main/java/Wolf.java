@@ -17,16 +17,16 @@ public class Wolf extends Animal {
     }
 
     public boolean preyCaught() {
-        return position.equals(prey.getPosition());
+        return position.distance(prey.getPosition()) < radius + prey.getRadius();
     }
 
 
 
     public Vector2D beginMove() {
        //TODO: wenn w geändert wird erst bug fixen
-        w = 0; //Geiwchtung der eigenen Richtung
+        w = 1; //Geiwchtung der eigenen Richtung
         pI = 0.0; // Gewichtung hin zum eigenen Bestwert
-        pG = 0.0; // Gewichtung hin zum Globalen Maximum
+        pG = 0.3; // Gewichtung hin zum Globalen Maximum
         pPrey = 1.25; //Gewichtung zur Position der Beute
         delta_v = 0.01;  // Skalierung der Schrittweite
 

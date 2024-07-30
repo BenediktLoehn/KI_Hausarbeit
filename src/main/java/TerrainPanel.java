@@ -33,6 +33,7 @@ public class TerrainPanel extends JPanel {
         }
 
         for(Obstacle obstacle : terrain.getObstacles()) {
+            g2d.setStroke(new BasicStroke(10));
             g2d.setColor(Color.LIGHT_GRAY);
             int x1 = (int) obstacle.getX().getX();
             int y1 = (int) obstacle.getX().getY();

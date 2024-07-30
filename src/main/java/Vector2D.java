@@ -77,7 +77,7 @@ public class Vector2D {
         double magnitude = magnitude();
         if (magnitude == 0) {
             // To avoid division by zero, return the zero vector
-            return new Vector2D(0, 0);
+            return new Vector2D(0.0, 0.0);
         }
         return new Vector2D(x / magnitude, y / magnitude);
     }

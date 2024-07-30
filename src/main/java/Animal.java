@@ -40,28 +40,40 @@ public abstract class Animal extends Thread{
         return newDirection.rotateVector(angle);
     }
 
-    protected Vector2D handleCollision(Vector2D newDirection) {
-        // Check immediate collision with obstacles
+    protected Vector2D handleObstacleCollision(Vector2D newDirection) {
         Obstacle collidingObstacle = null;
         double minimalDistance = Double.MAX_VALUE;
         for (Obstacle obstacle : terrain.getObstacles()) {
             Vector2D closestPoint = position.closestPointOnLineSegment(obstacle.getX(), obstacle.getY());
             double currentDistance = position.distance(closestPoint);
-            //TODO: drüber nachdenken
             if (currentDistance < radius + obstacle.getCollisionRadius()) {
-                if(collidingObstacle == null || position.distance(closestPoint) < minimalDistance) {
+                if (collidingObstacle == null || currentDistance < minimalDistance) {
                     minimalDistance = currentDistance;
                     collidingObstacle = obstacle;
                 }
             }
         }
 
-        // Handle collision
         if (collidingObstacle != null) {
-            return reflect(collidingObstacle, newDirection);
-        } else {
-            return newDirection;
+            // Calculate sliding direction along the obstacle
+            Vector2D obstacleDirection = collidingObstacle.calculateDirection();
+            double dotProduct = newDirection.dot(obstacleDirection);
+            newDirection = obstacleDirection.scale(dotProduct).normalize().scale(newDirection.magnitude());
         }
+        return newDirection;
+    }
+
+    private Vector2D handleBoundaryCollision(Vector2D newDirection) {
+        double newX = position.getX() + newDirection.getX();
+        double newY = position.getY() + newDirection.getY();
+
+        if (newX < 0 || newX > terrain.getWidth()) {
+            newDirection = new Vector2D(-newDirection.getX(), newDirection.getY());
+        }
+        if (newY < 0 || newY > terrain.getLength()) {
+            newDirection = new Vector2D(newDirection.getX(), -newDirection.getY());
+        }
+        return newDirection;
     }
     protected void move() {
 
@@ -69,27 +81,27 @@ public abstract class Animal extends Thread{
 
         // Introduce small random perturbation
         Vector2D perturbation = new Vector2D(rand.nextDouble(-1, 1), rand.nextDouble(-1, 1));
-        direction = direction.add(perturbation);
+        newDirection = newDirection.add(perturbation).normalize(); // Changed from 'direction' to 'newDirection' and normalized
 
-        System.err.printf("Calculated direction of %s (%d): %s \n", this.getClass().getName(), id, direction.toString());
+        System.err.printf("Calculated direction of %s (%d): %s \n", this.getClass().getName(), id, newDirection.toString());
 
-        //New Position
+        // Handle collision with obstacles and boundaries
+        newDirection = handleObstacleCollision(newDirection);
+        newDirection = handleBoundaryCollision(newDirection);
 
-        newDirection = handleCollision(newDirection);
-        Vector2D theoreticalNewDirection = handleCollision(newDirection);
         Vector2D newPosition = position.add(newDirection);
-        //new collision after handling the first one?
-        if(newDirection.equals(theoreticalNewDirection) && newPosition.getX() < 1000 && newPosition.getY() < 1000) {
-            setPosition(newPosition);
+        if (newPosition.getX() >= 0 && newPosition.getX() <= terrain.getWidth() &&
+                newPosition.getY() >= 0 && newPosition.getY() <= terrain.getLength()) {
+            setPosition(newPosition); // Set new position only if within terrain bounds
         }
-        setDirection(newDirection);
+        setDirection(newDirection.normalize());
         System.err.printf("new position of %s (%d): %s \n", this.getClass().getName(),  id, position.toString());
 
         update();
         try {
             Thread.sleep(10);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
     }
 

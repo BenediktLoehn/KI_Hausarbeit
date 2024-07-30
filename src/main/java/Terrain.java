@@ -18,7 +18,7 @@ public class Terrain {
         this.width = width;
 
         //initialize random obstacles
-        for(int i = 0; i < 20; i++) {
+        for(int i = 0; i < 10; i++) {
             Obstacle obstacle = new Obstacle(this);
             obstacles.add(obstacle);
         }

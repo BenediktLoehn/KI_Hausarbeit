@@ -25,6 +25,8 @@ public class Main {
         frame.setSize((int) terrain.getWidth(), (int) terrain.getLength()); // Größe des Frames entsprechend dem Terrain
         frame.setVisible(true);
 
+        long startTime = System.currentTimeMillis();
+
         prey.start();
         for (Wolf wolf : wolfs) {
             wolf.start();
@@ -50,7 +52,9 @@ public class Main {
         }
         wolfs.forEach(Wolf::interrupt);
 
-        System.err.printf("Prey was caught");
+        long endTime = System.currentTimeMillis();
+        float duration = endTime - startTime;
+        System.err.printf("Prey was caught in %.2f seconds", duration/1000);
     }
 
     public static void main(String[] args) {
