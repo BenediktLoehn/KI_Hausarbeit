@@ -7,7 +7,7 @@ public class Obstacle {
     private Vector2D x;
     private Vector2D y;
 
-    private double collisionRadius = 5.0;
+    private double collisionRadius = 0.0;
 
     private Vector2D position;
 
@@ -54,5 +54,17 @@ public class Obstacle {
 
     public void setCollisionRadius(double radius) {
         this.collisionRadius = radius;
+    }
+
+    public Vector2D getPosition() {
+        return this.position;
+    }
+
+    public Vector2D calculateDirection() {
+        return new Vector2D(y.getX() - x.getX(), y.getY() - x.getY());
+    }
+
+    public void setPosition(Vector2D position) {
+        this.position = position;
     }
 }

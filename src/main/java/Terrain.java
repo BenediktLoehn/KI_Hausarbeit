@@ -22,7 +22,7 @@ public class Terrain {
             Obstacle obstacle = new Obstacle(this);
             obstacles.add(obstacle);
         }
-        Vector2D x1 = new Vector2D(0.0, 0.0);
+        /*Vector2D x1 = new Vector2D(0.0, 0.0);
         Vector2D y1 = new Vector2D(width, 0.0);
         Obstacle xAxisTop = new Obstacle(x1, y1);
         obstacles.add(xAxisTop);
@@ -37,7 +37,7 @@ public class Terrain {
         x1 = new Vector2D(0.0, length);
         y1 = new Vector2D(width, length);
         Obstacle xAxisBottom = new Obstacle(x1, y1);
-        obstacles.add(xAxisBottom);
+        obstacles.add(xAxisBottom);*/
     }
 
     public double getLength() {

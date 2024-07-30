@@ -1,7 +1,6 @@
-import java.util.List;
 import java.util.Random;
 
-public class Animal extends Thread{
+public abstract class Animal extends Thread{
     protected final Random rand = new Random();
     protected int id;
 
@@ -24,9 +23,6 @@ public class Animal extends Thread{
 
     private Vector2D selfMaxPosition;
 
-
-
-
     public Animal(Terrain terrain, int id) {
         this.terrain = terrain;
         this.id = id;
@@ -37,23 +33,70 @@ public class Animal extends Thread{
 
         direction = new Vector2D(rand.nextDouble(-1, 1), rand.nextDouble(-1, 1));
         this.selfMaxPosition = position;
-
-
     }
 
-    //check collisions with obstacles
-    /*protected boolean isColliding(Vector2D newPosition, List<Obstacle> obstacles, double obstacleRadius) {
-        for(Obstacle obstacle : obstacles) {
-            if(newPosition.distance(obstacle) < this.radius + obstacleRadius) {
-                return true;
+    public Vector2D reflect(Obstacle obstacle, Vector2D newDirection) {
+        double angle = newDirection.calculateAngleToOtherVector(obstacle.calculateDirection());
+        return newDirection.rotateVector(angle);
+    }
+
+    protected Vector2D handleCollision(Vector2D newDirection) {
+        // Check immediate collision with obstacles
+        Obstacle collidingObstacle = null;
+        double minimalDistance = Double.MAX_VALUE;
+        for (Obstacle obstacle : terrain.getObstacles()) {
+            Vector2D closestPoint = position.closestPointOnLineSegment(obstacle.getX(), obstacle.getY());
+            double currentDistance = position.distance(closestPoint);
+            //TODO: drüber nachdenken
+            if (currentDistance < radius + obstacle.getCollisionRadius()) {
+                if(collidingObstacle == null || position.distance(closestPoint) < minimalDistance) {
+                    minimalDistance = currentDistance;
+                    collidingObstacle = obstacle;
+                }
             }
         }
-        return false;
-    }*/
 
-    public void move() {
-
+        // Handle collision
+        if (collidingObstacle != null) {
+            return reflect(collidingObstacle, newDirection);
+        } else {
+            return newDirection;
+        }
     }
+    protected void move() {
+
+        Vector2D newDirection = beginMove();
+
+        // Introduce small random perturbation
+        Vector2D perturbation = new Vector2D(rand.nextDouble(-1, 1), rand.nextDouble(-1, 1));
+        direction = direction.add(perturbation);
+
+        System.err.printf("Calculated direction of %s (%d): %s \n", this.getClass().getName(), id, direction.toString());
+
+        //New Position
+
+        newDirection = handleCollision(newDirection);
+        Vector2D theoreticalNewDirection = handleCollision(newDirection);
+        Vector2D newPosition = position.add(newDirection);
+        //new collision after handling the first one?
+        if(newDirection.equals(theoreticalNewDirection) && newPosition.getX() < 1000 && newPosition.getY() < 1000) {
+            setPosition(newPosition);
+        }
+        setDirection(newDirection);
+        System.err.printf("new position of %s (%d): %s \n", this.getClass().getName(),  id, position.toString());
+
+        update();
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public abstract void update();
+
+    public abstract Vector2D beginMove();
+
     public void run() {
         while(!isInterrupted()) {
             move();

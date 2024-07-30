@@ -3,10 +3,9 @@ import java.util.Random;
 
 public class Vector2D {
 
-    private Random rand = new Random();
-    private double x;
-    private double y;
-    private int precision = 2; //Nachkommastellen
+    private final double x;
+    private final double y;
+    private static final int precision = 2; //Nachkommastellen
 
     public Vector2D(double x, double y) {
         this.x = round(x,precision);
@@ -15,6 +14,7 @@ public class Vector2D {
 
     //random vector for starting position
     public Vector2D(int xBound, int yBound) {
+        Random rand = new Random();
         this.x = round(rand.nextDouble(0, xBound), precision);
         this.y = round(rand.nextDouble(0, yBound), precision);
     }
@@ -53,6 +53,18 @@ public class Vector2D {
         return this.x * other.x + this.y * other.y;
     }
 
+    public double calculateAngleToOtherVector(Vector2D other) {
+        return Math.acos(this.dot(other) / (this.magnitude() * other.magnitude()));
+    }
+
+    public Vector2D rotateVector(double angle) {
+        double x1 = getX();
+        double y1 = getY();
+        double x2 = Math.cos(angle) * x1 - Math.sin(angle) * y1;
+        double y2 = Math.sin(angle * x1) + Math.cos(angle) * y1;
+        return new Vector2D(x2, y2);
+    }
+
     public Vector2D closestPointOnLineSegment(Vector2D a, Vector2D b) {
         double lengthSquared = a.sub(b).magnitude() * a.sub(b).magnitude();
         if (lengthSquared == 0.0) return a;
@@ -74,21 +86,21 @@ public class Vector2D {
         return x;
     }
 
-    public void setX(double x) {
-        this.x = x;
-    }
-
     public double getY() {
         return y;
-    }
-
-    public void setY(double y) {
-        this.y = y;
     }
 
     @Override
     public String toString() {
         return String.format("Vector[%.2f | %.2f]", x, y);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Vector2D vector2D = (Vector2D) o;
+        return Double.compare(vector2D.x, x) == 0 && Double.compare(vector2D.y, y) == 0;
     }
 
     @Override
