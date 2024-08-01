@@ -23,27 +23,22 @@ public class Wolf extends Animal {
 
 
     public Vector2D beginMove() {
-        w = 1; //Geiwchtung der eigenen Richtung
-        pI = 0.0; // Gewichtung hin zum eigenen Bestwert
-        pG = 0.3; // Gewichtung hin zum Globalen Maximum
-        pPrey = 1.25; //Gewichtung zur Position der Beute
+        w = 1.0; //Gewichtung der eigenen Richtung
+        pG = 0.5; // Gewichtung hin zum Globalen Maximum
+        pPrey = 1.5; //Gewichtung zur Position der Beute
         delta_v = 0.01;  // Skalierung der Schrittweite
 
 
-        //random values for weight of own max, global max and prey position
-        double r1 = rand.nextDouble(), r2 = rand.nextDouble(), r3 = rand.nextDouble();
-
-        //Attraction for own max (always the current position)
-        Vector2D attractionLocalMax = getSelfMaxPosition().sub(position).scale(pI * r1).scale(delta_v);
+        //random values for weight of global max and prey position
+        double r1 = rand.nextDouble(), r2 = rand.nextDouble();
 
         //Attraction for global max
-        Vector2D attractionGlobalMax = terrain.getGlobalMaxPosition().sub(position).scale(pG * r2).scale(delta_v);
+        Vector2D attractionGlobalMax = terrain.getGlobalMaxPosition().sub(position).scale(pG * r1).scale(delta_v);
 
-        Vector2D attractionPrey = prey.getPosition().sub(position).scale(pPrey * r3).normalize();
+        Vector2D attractionPrey = prey.getPosition().sub(position).scale(pPrey * r2).normalize();
 
         //New direction
         Vector2D newDirection = direction.scale(w);
-        newDirection = newDirection.add(attractionLocalMax);
         newDirection = newDirection.add(attractionGlobalMax);
         newDirection = newDirection.add(attractionPrey);
         return newDirection;

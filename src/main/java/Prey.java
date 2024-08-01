@@ -12,9 +12,8 @@ public class Prey extends Animal {
 
     @Override
     public Vector2D beginMove() {
-        double w = 3; // Weighting of the own direction
-        double pWolf = -1.5; // Weighting away from wolves
-        double delta_v = 0.3;  // Scaling of step size
+        double w = 2.5; // Weighting of the own direction
+        double pWolf = -2.25; // Weighting away from wolves
 
         double r1 = rand.nextDouble();
 
