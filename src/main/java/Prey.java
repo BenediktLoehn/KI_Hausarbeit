@@ -13,7 +13,7 @@ public class Prey extends Animal {
     @Override
     public Vector2D beginMove() {
         double w = 3; // Weighting of the own direction
-        double pWolf = -3; // Weighting away from wolves
+        double pWolf = -1.5; // Weighting away from wolves
         double delta_v = 0.3;  // Scaling of step size
 
         double r1 = rand.nextDouble();
@@ -32,13 +32,5 @@ public class Prey extends Animal {
         Vector2D newDirection = direction.scale(w);
         newDirection = newDirection.add(repulsionFromWolf);
         return newDirection;
-    }
-
-
-    @Override
-    public void run() {
-        while (!isInterrupted()) {
-            move();
-        }
     }
 }

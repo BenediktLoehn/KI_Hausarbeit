@@ -4,9 +4,9 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 
 public class TerrainPanel extends JPanel {
-    private Terrain terrain;
-    private Prey prey;
-    private List<Wolf> wolfs;
+    private final Terrain terrain;
+    private final Prey prey;
+    private final List<Wolf> wolfs;
 
 
     BufferedImage terrainBackground;

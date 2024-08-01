@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class Terrain {
 
@@ -22,22 +21,6 @@ public class Terrain {
             Obstacle obstacle = new Obstacle(this);
             obstacles.add(obstacle);
         }
-        /*Vector2D x1 = new Vector2D(0.0, 0.0);
-        Vector2D y1 = new Vector2D(width, 0.0);
-        Obstacle xAxisTop = new Obstacle(x1, y1);
-        obstacles.add(xAxisTop);
-        x1 = new Vector2D(0.0, 0.0);
-        y1 = new Vector2D(0.0, length);
-        Obstacle yAxisLeft = new Obstacle(x1, y1);
-        obstacles.add(yAxisLeft);
-        x1 = new Vector2D(width, 0.0);
-        y1 = new Vector2D(width, length);
-        Obstacle yAxisRight = new Obstacle(x1, y1);
-        obstacles.add(yAxisRight);
-        x1 = new Vector2D(0.0, length);
-        y1 = new Vector2D(width, length);
-        Obstacle xAxisBottom = new Obstacle(x1, y1);
-        obstacles.add(xAxisBottom);*/
     }
 
     public double getLength() {
@@ -74,9 +57,5 @@ public class Terrain {
 
     public List<Obstacle> getObstacles() {
         return obstacles;
-    }
-
-    public void setObstacles(List<Obstacle> obstacles) {
-        this.obstacles = obstacles;
     }
 }

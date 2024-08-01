@@ -23,7 +23,6 @@ public class Wolf extends Animal {
 
 
     public Vector2D beginMove() {
-       //TODO: wenn w geändert wird erst bug fixen
         w = 1; //Geiwchtung der eigenen Richtung
         pI = 0.0; // Gewichtung hin zum eigenen Bestwert
         pG = 0.3; // Gewichtung hin zum Globalen Maximum
@@ -43,42 +42,11 @@ public class Wolf extends Animal {
         Vector2D attractionPrey = prey.getPosition().sub(position).scale(pPrey * r3).normalize();
 
         //New direction
-        //startet als nullvektor
         Vector2D newDirection = direction.scale(w);
         newDirection = newDirection.add(attractionLocalMax);
         newDirection = newDirection.add(attractionGlobalMax);
         newDirection = newDirection.add(attractionPrey);
         return newDirection;
     }
-
-
-
-
-    /*private Vector2D findAlternativeDirection() {
-        double angleIncrement = Math.PI / 8; // Increment angle by 22.5 degrees
-        for (int i = 1; i <= 8; i++) { // Check 8 alternative directions
-            double angle = angleIncrement * i;
-            Vector2D alternativeDirection = new Vector2D(
-                    direction.getX() * Math.cos(angle) - direction.getY() * Math.sin(angle),
-                    direction.getX() * Math.sin(angle) + direction.getY() * Math.cos(angle)
-            ).normalize().scale(delta_v);
-
-            Vector2D newPosition = position.add(alternativeDirection);
-            boolean collisionDetected = false;
-            for (Obstacle obstacle : terrain.getObstacles()) {
-                Vector2D closestPoint = newPosition.closestPointOnLineSegment(obstacle.getX(), obstacle.getY());
-                if (newPosition.distance(closestPoint) < radius + obstacle.getCollisionRadius()) {
-                    collisionDetected = true;
-                    break;
-                }
-            }
-
-            if (!collisionDetected) {
-                return alternativeDirection;
-            }
-        }
-        return direction.scale(-1); // If no alternative direction is found, reverse direction
-    }*/
-
 }
 

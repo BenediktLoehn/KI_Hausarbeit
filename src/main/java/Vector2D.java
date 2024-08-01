@@ -1,5 +1,4 @@
 import java.util.Objects;
-import java.util.Random;
 
 public class Vector2D {
 
@@ -10,13 +9,6 @@ public class Vector2D {
     public Vector2D(double x, double y) {
         this.x = round(x,precision);
         this.y = round(y,precision);
-    }
-
-    //random vector for starting position
-    public Vector2D(int xBound, int yBound) {
-        Random rand = new Random();
-        this.x = round(rand.nextDouble(0, xBound), precision);
-        this.y = round(rand.nextDouble(0, yBound), precision);
     }
 
     public Vector2D add(Vector2D other) {
@@ -35,10 +27,6 @@ public class Vector2D {
         return Math.round(input * Math.pow(10,digits)) /Math.pow(10,digits);
     }
 
-    public Vector2D elementWiseMul(Vector2D other) {
-        return new Vector2D(round(this.x * other.x, precision), round(this.y * other.y, precision));
-    }
-
     // Distance between two vectors
     public double distance(Vector2D other) {
         return Math.sqrt(Math.pow(this.x - other.x, 2) + Math.pow(this.y - other.y, 2));
@@ -51,18 +39,6 @@ public class Vector2D {
 
     public double dot(Vector2D other) {
         return this.x * other.x + this.y * other.y;
-    }
-
-    public double calculateAngleToOtherVector(Vector2D other) {
-        return Math.acos(this.dot(other) / (this.magnitude() * other.magnitude()));
-    }
-
-    public Vector2D rotateVector(double angle) {
-        double x1 = getX();
-        double y1 = getY();
-        double x2 = Math.cos(angle) * x1 - Math.sin(angle) * y1;
-        double y2 = Math.sin(angle * x1) + Math.cos(angle) * y1;
-        return new Vector2D(x2, y2);
     }
 
     public Vector2D closestPointOnLineSegment(Vector2D a, Vector2D b) {
